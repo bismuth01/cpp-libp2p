@@ -29,14 +29,12 @@ namespace libp2p::connection {
   void QuicStream::read(BytesOut out,
                         size_t bytes,
                         basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
 
   void QuicStream::readSome(BytesOut out,
                             size_t bytes,
                             basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     outcome::result<size_t> r = QuicError::STREAM_CLOSED;
     if (not stream_ctx_) {
       return cb(r);
@@ -64,7 +62,6 @@ namespace libp2p::connection {
   void QuicStream::writeSome(BytesIn in,
                              size_t bytes,
                              basic::Writer::WriteCallbackFunc cb) {
-    ambigousSize(in, bytes);
     outcome::result<size_t> r = QuicError::STREAM_CLOSED;
     if (not stream_ctx_) {
       return cb(r);

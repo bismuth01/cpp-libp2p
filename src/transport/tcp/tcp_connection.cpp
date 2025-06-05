@@ -175,7 +175,7 @@ namespace libp2p::transport {
   void TcpConnection::read(BytesOut out,
                            size_t bytes,
                            TcpConnection::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
+    ambigousSize(out, bytes);   //Removing this line causes muxers_and_streams_test
     TRACE("{} read {}", debug_str_, bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
@@ -184,7 +184,6 @@ namespace libp2p::transport {
                                size_t bytes,
                                TcpConnection::ReadCallbackFunc cb) {
     ByteCounter::getInstance().incrementBytesRead(bytes);
-    ambigousSize(out, bytes);
     TRACE("{} read some up to {}", debug_str_, bytes);
     socket_.async_read_some(asioBuffer(out),
                             closeOnError(*this, std::move(cb)));
@@ -194,7 +193,6 @@ namespace libp2p::transport {
                                 size_t bytes,
                                 TcpConnection::WriteCallbackFunc cb) {
     ByteCounter::getInstance().incrementBytesWritten(bytes);
-    ambigousSize(in, bytes);
     TRACE("{} write some up to {}", debug_str_, bytes);
     socket_.async_write_some(asioBuffer(in),
                              closeOnError(*this, std::move(cb)));

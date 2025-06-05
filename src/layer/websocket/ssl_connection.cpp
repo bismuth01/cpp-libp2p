@@ -46,21 +46,18 @@ namespace libp2p::connection {
   void SslConnection::read(BytesOut out,
                            size_t bytes,
                            libp2p::basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
 
   void SslConnection::readSome(BytesOut out,
                                size_t bytes,
                                libp2p::basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     ssl_.async_read_some(asioBuffer(out), toAsioCbSize(std::move(cb)));
   }
 
   void SslConnection::writeSome(BytesIn in,
                                 size_t bytes,
                                 libp2p::basic::Writer::WriteCallbackFunc cb) {
-    ambigousSize(in, bytes);
     ssl_.async_write_some(asioBuffer(in), toAsioCbSize(std::move(cb)));
   }
 

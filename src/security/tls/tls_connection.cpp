@@ -143,7 +143,6 @@ namespace libp2p::connection {
   void TlsConnection::read(BytesOut out,
                            size_t bytes,
                            Reader::ReadCallbackFunc f) {
-    ambigousSize(out, bytes);
     SL_TRACE(log(), "reading {} bytes", bytes);
     readReturnSize(shared_from_this(), out, std::move(f));
   }
@@ -151,7 +150,6 @@ namespace libp2p::connection {
   void TlsConnection::readSome(BytesOut out,
                                size_t bytes,
                                Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     SL_TRACE(log(), "reading some up to {} bytes", bytes);
     socket_.async_read_some(asioBuffer(out),
                             closeOnError(*this, std::move(cb)));
@@ -165,7 +163,6 @@ namespace libp2p::connection {
   void TlsConnection::writeSome(BytesIn in,
                                 size_t bytes,
                                 Writer::WriteCallbackFunc cb) {
-    ambigousSize(in, bytes);
     SL_TRACE(log(), "writing some up to {} bytes", bytes);
     socket_.async_write_some(asioBuffer(in),
                              closeOnError(*this, std::move(cb)));

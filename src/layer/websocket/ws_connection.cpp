@@ -88,7 +88,6 @@ namespace libp2p::connection {
   void WsConnection::read(BytesOut out,
                           size_t bytes,
                           libp2p::basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     SL_TRACE(log_, "read {} bytes", bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
@@ -96,7 +95,6 @@ namespace libp2p::connection {
   void WsConnection::readSome(BytesOut out,
                               size_t bytes,
                               libp2p::basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     SL_TRACE(log_, "read some upto {} bytes", bytes);
     auto on_read = [weak{weak_from_this()}, out, cb{std::move(cb)}](
                        boost::system::error_code ec, size_t n) mutable {
@@ -116,7 +114,6 @@ namespace libp2p::connection {
   void WsConnection::writeSome(BytesIn in,    //
                                size_t bytes,  //
                                libp2p::basic::Writer::WriteCallbackFunc cb) {
-    ambigousSize(in, bytes);
     SL_TRACE(log_, "write some upto {} bytes", bytes);
     ws_.async_write_some(true, asioBuffer(in), toAsioCbSize(std::move(cb)));
   }

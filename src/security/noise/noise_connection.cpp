@@ -65,7 +65,6 @@ namespace libp2p::connection {
   void NoiseConnection::read(BytesOut out,
                              size_t bytes,
                              libp2p::basic::Reader::ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
 

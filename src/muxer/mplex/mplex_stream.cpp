@@ -35,7 +35,6 @@ namespace libp2p::connection {
       : connection_{std::move(connection)}, stream_id_{stream_id} {}
 
   void MplexStream::read(BytesOut out, size_t bytes, ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
 
@@ -89,7 +88,6 @@ namespace libp2p::connection {
   }
 
   void MplexStream::writeSome(BytesIn in, size_t bytes, WriteCallbackFunc cb) {
-    ambigousSize(in, bytes);
     // TODO(107): Reentrancy
 
     if (is_reset_) {

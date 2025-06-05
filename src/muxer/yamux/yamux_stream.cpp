@@ -45,7 +45,6 @@ namespace libp2p::connection {
   }
 
   void YamuxStream::read(BytesOut out, size_t bytes, ReadCallbackFunc cb) {
-    ambigousSize(out, bytes);
     readReturnSize(shared_from_this(), out, std::move(cb));
   }
 
