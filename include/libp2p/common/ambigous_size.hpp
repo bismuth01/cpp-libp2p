@@ -15,6 +15,8 @@ namespace libp2p {
     if (n > s.size()) {
       throw std::logic_error{"libp2p::ambigousSize"};
     }
-    s = s.first(n);
+    if(s.size() > n){
+      s = s.first(n);
+    }
   }
 }  // namespace libp2p

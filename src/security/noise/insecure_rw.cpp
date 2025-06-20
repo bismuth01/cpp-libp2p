@@ -9,6 +9,7 @@
 #include <libp2p/security/noise/insecure_rw.hpp>
 
 #include <libp2p/basic/write_return_size.hpp>
+#include <libp2p/basic/read.hpp>
 #include <libp2p/common/byteutil.hpp>
 #include <libp2p/security/noise/crypto/state.hpp>
 
@@ -36,11 +37,11 @@ namespace libp2p::security::noise {
   void InsecureReadWriter::read(basic::MessageReadWriter::ReadCallbackFunc cb) {
     buffer_->resize(kMaxMsgLen);  // ensure buffer capacity
     auto read_cb = [cb{std::move(cb)}, self{shared_from_this()}](
-                       outcome::result<size_t> result) mutable {
-      IO_OUTCOME_TRY(read_bytes, result, cb);
-      if (kLengthPrefixSize != read_bytes) {
-        return cb(std::errc::broken_pipe);
-      }
+                       outcome::result<void> result) mutable {
+      // IO_OUTCOME_TRY(read_bytes, result, cb);
+      // if (kLengthPrefixSize != read_bytes) {
+      //   return cb(std::errc::broken_pipe);
+      // }
       uint16_t frame_len{
           ntohs(common::convert<uint16_t>(self->buffer_->data()))};  // NOLINT
       auto read_cb = [cb = std::move(cb), self, frame_len](
@@ -54,7 +55,7 @@ namespace libp2p::security::noise {
       };
       self->connection_->read(*self->buffer_, frame_len, std::move(read_cb));
     };
-    connection_->read(*buffer_, kLengthPrefixSize, std::move(read_cb));
+    libp2p::read(connection_, BytesOut{*buffer_}.first(kLengthPrefixSize), std::move(read_cb));
   }
 
   void InsecureReadWriter::write(BytesIn buffer,

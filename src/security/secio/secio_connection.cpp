@@ -16,6 +16,7 @@
 #include <libp2p/crypto/aes_ctr/aes_ctr_impl.hpp>
 #include <libp2p/crypto/error.hpp>
 #include <libp2p/crypto/hmac_provider.hpp>
+#include <libp2p/basic/read.hpp>
 
 OUTCOME_CPP_DEFINE_CATEGORY(libp2p::connection, SecioConnection::Error, e) {
   using E = libp2p::connection::SecioConnection::Error;
@@ -241,9 +242,9 @@ namespace libp2p::connection {
   }
 
   void SecioConnection::readNextMessage(ReadCallbackFunc cb) {
-    original_connection_->read(
-        *read_buffer_,
-        kLenMarkerSize,
+    libp2p::read(
+      original_connection_,
+      BytesOut{*read_buffer_}.first(kLenMarkerSize),
         [self{shared_from_this()}, buffer = read_buffer_, cb{std::move(cb)}](
             outcome::result<size_t> read_bytes_res) mutable {
           IO_OUTCOME_TRY(len_marker_size, read_bytes_res, cb);
